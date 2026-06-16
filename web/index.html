@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YaoNomad 卜卦</title>
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+  textarea { width: 100%; box-sizing: border-box; font-size: 1rem; }
+  button { margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 1rem; }
+  .hexagram { margin-top: 1.5rem; padding: 1rem; border: 1px solid #ccc; border-radius: 4px; }
+  .lines { white-space: pre-line; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+  <h1>YaoNomad 卜卦</h1>
+  <textarea id="question" rows="2" placeholder="輸入你的問題"></textarea>
+  <br>
+  <button id="cast-btn">開始卜卦</button>
+  <div id="result"></div>
+
+  <script type="module">
+    import { castHexagram } from './core/casting.js'
+
+    let hexagramsPromise = null
+
+    function loadHexagrams() {
+      if (hexagramsPromise === null) {
+        hexagramsPromise = fetch('./data/hexagrams.json').then(res => res.json())
+      }
+      return hexagramsPromise
+    }
+
+    function renderHexagram(title, hexagram) {
+      const section = document.createElement('div')
+      section.className = 'hexagram'
+
+      const heading = document.createElement('h2')
+      heading.textContent = `${title}：${hexagram.number}. ${hexagram.name}`
+      section.appendChild(heading)
+
+      const judgment = document.createElement('p')
+      judgment.textContent = hexagram.judgment
+      section.appendChild(judgment)
+
+      const lines = document.createElement('div')
+      lines.className = 'lines'
+      lines.textContent = hexagram.lines.join('\n')
+      section.appendChild(lines)
+
+      return section
+    }
+
+    document.getElementById('cast-btn').addEventListener('click', async () => {
+      const question = document.getElementById('question').value
+      const hexagrams = await loadHexagrams()
+      const result = castHexagram(hexagrams, question)
+
+      const resultEl = document.getElementById('result')
+      resultEl.replaceChildren()
+      resultEl.appendChild(renderHexagram('本卦', result.present))
+      if (result.future !== null) {
+        resultEl.appendChild(renderHexagram('變卦', result.future))
+      }
+    })
+  </script>
+</body>
+</html>
