@@ -7,14 +7,14 @@
 | 平台 | 目錄 | 技術 |
 |------|------|------|
 | Web PWA | `/web` | HTML / CSS / JavaScript（無框架） |
-| Go TUI | `/tui-go` | Go + Bubble Tea |
+| JS TUI | `/tui-js` | Node.js（無框架） |
 
 ## 架構
 
 ```
 /core-spec/        演算法規格與 64 卦資料正本
 /web/              PWA 介面（離線可用）
-/tui-go/           終端機介面
+/tui-js/           終端機介面
 /docs/             設計文件
 ```
 
@@ -26,10 +26,10 @@
 
 ## 快速開始
 
-### Go TUI
+### JS TUI
 
 ```bash
-go run ./tui-go/cmd/yaonomad-tui/
+node tui-js/main.js
 ```
 
 ### Web
